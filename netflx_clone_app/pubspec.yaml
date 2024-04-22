@@ -63,6 +63,8 @@ flutter:
   assets:
     - assets/netflix-logo.png
     - assets/tdwp-header.jpg
+    - assets/st-header.png
+    - assets/tg-header.jpg
     - assets/jsonData/top10ro.json
     - assets/jsonData/popularMovies.json
     - assets/jsonData/popularSeries.json

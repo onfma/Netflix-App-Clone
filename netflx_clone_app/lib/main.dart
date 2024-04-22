@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 
-
 var box = Hive.box('myList');
 
 void main() async{
@@ -51,7 +50,7 @@ class HomePage extends StatelessWidget {
         child: Column(
           children: [
             const NavBar(),
-            Header(data: data),
+            Header(data: data, imgPath: 'assets/tdwp-header.jpg'),
             Container(
               margin: const EdgeInsets.all(30), 
               child: MovieSection(title: 'Top 10 - Romania', jsonFile: 'jsonData/top10ro.json'),
@@ -78,13 +77,13 @@ class HomePage extends StatelessWidget {
 class SeriesPage extends StatelessWidget {
   SeriesPage({super.key});
 
-  final Map<String, dynamic> data = {
-    'title': "The Devil Wears Prada",
-    'year': "2006",
-    'genre': "Comedy, Drama",
-    'description': "A college grad discovers her own strength — and style — while suffering for success as an assistant to the tyrannical editor of a fashion magazine.",
-    'actors': "Meryl Streep, Anne Hathaway, Stanley Tucci, Simon Baker, Emily Blunt, Adrian Grenier",
-    'img_link': "https://occ-0-3032-3467.1.nflxso.net/dnm/api/v6/Qs00mKCpRvrkl3HZAN5KwEL1kpE/AAAABeRVPZPPeDpkfzuQLJBXMJS-cwhKXigg36DLHIdBb0T8O5sMMEuQPi4GPWXGPZ-8HxD7YcNjKptnShTfqRRPi05KeB1rAeKE21vW.jpg?r=3e8"
+  final Map<String, dynamic> data1 = {
+    'title': "Stranger Things",
+    'year': "2016",
+    'genre': "Drama",
+    'description': "When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces and one strange little girl.",
+    'actors': "Nathan Fillion, Alyssa Diaz, Richard T. Jones",
+    'img_link': "https://occ-0-3032-3466.1.nflxso.net/dnm/api/v6/Qs00mKCpRvrkl3HZAN5KwEL1kpE/AAAABc_QuOdHzJa9WwBiBlfEvpcFRKq9TAIgdJv0KoSilQZ8JMEsdCdQS4VGD6gwVg2CYCYNhTJIald5uVsXbMf-3QaF1k1fnFRbovQr6ddWUtkSOUzil_dtlD1wOIeD_pSI6pAx.jpg?r=c68"
   };
 
   @override
@@ -94,19 +93,15 @@ class SeriesPage extends StatelessWidget {
         child: Column(
           children: [
             const NavBar(),
-            Header(data: data),
-            Container(
-              margin: const EdgeInsets.all(30), 
-              child: MovieSection(title: 'Top 10 - Romania', jsonFile: 'jsonData/top10ro.json'),
-            ), 
+            Header(data: data1, imgPath: 'assets/st-header.png'),
             Container(
               margin: const EdgeInsets.all(30),
               child: MovieSection(title: 'Popular Series', jsonFile: 'jsonData/popularSeries.json'),
             ),
             Container(
               margin: const EdgeInsets.all(30), 
-              child: MovieSection(title: 'Popular Movies', jsonFile: 'jsonData/popularMovies.json'),
-            ),
+              child: MovieSection(title: 'Top 10 - Romania', jsonFile: 'jsonData/top10ro.json'),
+            ), 
             Container(
               margin: const EdgeInsets.all(30),
               child: SpecialSection(title: 'Netflix Originals', jsonFile: 'jsonData/originals.json'),
@@ -119,20 +114,38 @@ class SeriesPage extends StatelessWidget {
 }
 
 class FilmsPage extends StatelessWidget {
-  const FilmsPage({super.key});
+  FilmsPage({super.key});
+
+  final Map<String, dynamic> data1 = {
+    'title': "Top Gun: Maverick",
+    'year': "2022",
+    'genre': "Action",
+    'description': "After more than 30 years as one of the Navy's top aviators, Maverick trains a group of Top Gun graduates for a specialized — and dangerous — mission.",
+    'actors': "Tom Cruise, Miles Teller, Jennifer Connelly",
+    'img_link': "https://occ-0-3032-3466.1.nflxso.net/dnm/api/v6/Qs00mKCpRvrkl3HZAN5KwEL1kpE/AAAABZ_rblqcHBS4lWmBXoMr-JRL6-oiSRFQ6E7MK-fjDNzHYvnqMFBZ3HRAmWVbMGxQtZtegrI-3qLlGyBKggmn-ES-lwULU9Qao1M.jpg?r=67e"
+  };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Films Page'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          child: const Text('Go back'),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const NavBar(),
+            Header(data: data1, imgPath: 'assets/tg-header.jpg'),
+            Container(
+              margin: const EdgeInsets.all(30),
+              child: MovieSection(title: 'Popular Movies', jsonFile: 'jsonData/popularMovies.json'),
+            ),
+            Container(
+              margin: const EdgeInsets.all(30), 
+              child: MovieSection(title: 'Top 10 - Romania', jsonFile: 'jsonData/top10ro.json'),
+            ), 
+            Container(
+              margin: const EdgeInsets.all(30),
+              child: SpecialSection(title: 'Netflix Originals', jsonFile: 'jsonData/originals.json'),
+            ), 
+          ],
         ),
       ),
     );
@@ -212,7 +225,7 @@ class NavBar extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const FilmsPage()),
+              MaterialPageRoute(builder: (context) => FilmsPage()),
             );
           },
         ),
@@ -236,16 +249,16 @@ class NavBar extends StatelessWidget {
 }
 
 class Header extends StatelessWidget {
+  const Header({super.key, required this.data, required this.imgPath});
   final Map<String, dynamic> data;
-  
-  const Header({super.key, required this.data});
+  final String imgPath;
   
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
-          image: NetworkImage('assets/tdwp-header.jpg'),
+            image: NetworkImage(imgPath),
           fit: BoxFit.cover,
         ),
       ),
@@ -256,9 +269,9 @@ class Header extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'The Devil Wears \n Prada',
-                style: TextStyle(
+              Text(
+                data['title'],
+                style: const TextStyle(
                   fontSize: 60, 
                   color: Color.fromRGBO(255, 195, 195, 1),
                 ),
