@@ -1,8 +1,14 @@
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 
-void main() {
+
+var box = Hive.box('myList');
+
+void main() async{
+  box = await Hive.openBox('myList');
+  await box.clear();
   runApp(const MyApp());
 }
 
@@ -20,14 +26,23 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: HomePage(),
     );
   }
 }
 
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  final Map<String, dynamic> data = {
+    'title': "The Devil Wears Prada",
+    'year': "2006",
+    'genre': "Comedy, Drama",
+    'description': "A college grad discovers her own strength — and style — while suffering for success as an assistant to the tyrannical editor of a fashion magazine.",
+    'actors': "Meryl Streep, Anne Hathaway, Stanley Tucci, Simon Baker, Emily Blunt, Adrian Grenier",
+    'img_link': "https://occ-0-3032-3467.1.nflxso.net/dnm/api/v6/Qs00mKCpRvrkl3HZAN5KwEL1kpE/AAAABeRVPZPPeDpkfzuQLJBXMJS-cwhKXigg36DLHIdBb0T8O5sMMEuQPi4GPWXGPZ-8HxD7YcNjKptnShTfqRRPi05KeB1rAeKE21vW.jpg?r=3e8"
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +51,7 @@ class HomePage extends StatelessWidget {
         child: Column(
           children: [
             const NavBar(),
-            const Header(),
+            Header(data: data),
             Container(
               margin: const EdgeInsets.all(30), 
               child: MovieSection(title: 'Top 10 - Romania', jsonFile: 'jsonData/top10ro.json'),
@@ -51,7 +66,7 @@ class HomePage extends StatelessWidget {
             ),
             Container(
               margin: const EdgeInsets.all(30),
-              child: SpecialSection(title: 'Netflix Originals', jsonFile: 'jsonData/top10ro.json'),
+              child: SpecialSection(title: 'Netflix Originals', jsonFile: 'jsonData/originals.json'),
             ), 
           ],
         ),
@@ -61,20 +76,42 @@ class HomePage extends StatelessWidget {
 }
 
 class SeriesPage extends StatelessWidget {
-  const SeriesPage({super.key});
+  SeriesPage({super.key});
+
+  final Map<String, dynamic> data = {
+    'title': "The Devil Wears Prada",
+    'year': "2006",
+    'genre': "Comedy, Drama",
+    'description': "A college grad discovers her own strength — and style — while suffering for success as an assistant to the tyrannical editor of a fashion magazine.",
+    'actors': "Meryl Streep, Anne Hathaway, Stanley Tucci, Simon Baker, Emily Blunt, Adrian Grenier",
+    'img_link': "https://occ-0-3032-3467.1.nflxso.net/dnm/api/v6/Qs00mKCpRvrkl3HZAN5KwEL1kpE/AAAABeRVPZPPeDpkfzuQLJBXMJS-cwhKXigg36DLHIdBb0T8O5sMMEuQPi4GPWXGPZ-8HxD7YcNjKptnShTfqRRPi05KeB1rAeKE21vW.jpg?r=3e8"
+  };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Series Page'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          child: const Text('Go back'),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const NavBar(),
+            Header(data: data),
+            Container(
+              margin: const EdgeInsets.all(30), 
+              child: MovieSection(title: 'Top 10 - Romania', jsonFile: 'jsonData/top10ro.json'),
+            ), 
+            Container(
+              margin: const EdgeInsets.all(30),
+              child: MovieSection(title: 'Popular Series', jsonFile: 'jsonData/popularSeries.json'),
+            ),
+            Container(
+              margin: const EdgeInsets.all(30), 
+              child: MovieSection(title: 'Popular Movies', jsonFile: 'jsonData/popularMovies.json'),
+            ),
+            Container(
+              margin: const EdgeInsets.all(30),
+              child: SpecialSection(title: 'Netflix Originals', jsonFile: 'jsonData/originals.json'),
+            ), 
+          ],
         ),
       ),
     );
@@ -109,15 +146,15 @@ class MyListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My List Page'),
+        title: const Text(
+          'My List',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: const Color.fromRGBO(255, 195, 195, 1),
       ),
       body: Center(
-        child: ElevatedButton(
-          child: const Text('Go back'),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        child: 
+          SectionMyList(),
       ),
     );
   }
@@ -147,7 +184,7 @@ class NavBar extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
+              MaterialPageRoute(builder: (context) => HomePage()),
             );
           },
         ),
@@ -161,7 +198,7 @@ class NavBar extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const SeriesPage()),
+              MaterialPageRoute(builder: (context) => SeriesPage()),
             );
           },
         ),
@@ -199,8 +236,10 @@ class NavBar extends StatelessWidget {
 }
 
 class Header extends StatelessWidget {
-  const Header({super.key});
-
+  final Map<String, dynamic> data;
+  
+  const Header({super.key, required this.data});
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -225,7 +264,14 @@ class Header extends StatelessWidget {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Modal(data: data);
+                    },
+                  );
+                },
                 child: const Text('View More'),
               ),
             ],
@@ -236,11 +282,88 @@ class Header extends StatelessWidget {
   }
 }
 
-// ignore: must_be_immutable
+class Modal extends StatelessWidget {
+  final Map<String, dynamic> data;
+
+  const Modal({super.key, 
+              required this.data});
+  
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        height: 300,
+        color: const Color.fromRGBO(255, 195, 195, 1),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                data['title'],
+                style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    data['year'],
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text("| ", style: TextStyle(fontSize: 20)),
+                  Text(
+                    data['genre'],
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                data['description'],
+                style: const TextStyle(fontSize: 24),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "Actors: ${data['actors']}",
+                style: const TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () async {
+                  if (box.values.contains(data)) {
+                    final index = box.values.toList().indexWhere((element) => element == data);
+                    await box.deleteAt(index);
+                  } else {
+                    await box.add(data);
+                  }
+                  // ignore: avoid_print
+                  print(box.values.toList());
+                },
+                child: ValueListenableBuilder(
+                  valueListenable: box.listenable(),
+                  builder: (context, Box box, _) {
+                    return Text(box.values.contains(data) ? '- My List' : '+ My List');
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
 class MovieSection extends StatelessWidget {
   MovieSection({super.key, required this.title, required this.jsonFile});
   final String title;
-  String jsonFile;
+  final String jsonFile;
 
   final ScrollController _controller = ScrollController();
 
@@ -271,7 +394,7 @@ class MovieSection extends StatelessWidget {
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () {
                       _controller.animateTo(
-                        _controller.offset - 300.0 * 4, 
+                        _controller.offset - 300.0 * 1, 
                         curve: Curves.easeOut,
                         duration: const Duration(milliseconds: 300),
                       );
@@ -291,18 +414,7 @@ class MovieSection extends StatelessWidget {
                                 showDialog(
                                   context: context,
                                   builder: (context) {
-                                    return Dialog(
-                                      child: Container(
-                                        height: 200,
-                                        color:const Color.fromRGBO(255, 195, 195, 1),
-                                        child: Center(
-                                          child: Text(
-                                            snapshot.data?[index]['description'],
-                                            style: const TextStyle(fontSize: 24),
-                                          ),
-                                        ),
-                                      ),
-                                    );
+                                    return Modal(data: snapshot.data?[index]);
                                   },
                                 );
                               },
@@ -332,7 +444,7 @@ class MovieSection extends StatelessWidget {
                     icon: const Icon(Icons.arrow_forward),
                     onPressed: () {
                       _controller.animateTo(
-                        _controller.offset + 300.0 * 4,
+                        _controller.offset + 300.0 * 1,
                         curve: Curves.easeOut,
                         duration: const Duration(milliseconds: 300),
                       );
@@ -350,11 +462,10 @@ class MovieSection extends StatelessWidget {
   }
 }
 
-// ignore: must_be_immutable
 class SpecialSection extends StatelessWidget {
   SpecialSection({super.key, required this.title, required this.jsonFile});
   final String title;
-  String jsonFile;
+  final String jsonFile;
 
   final ScrollController _controller = ScrollController();
 
@@ -385,7 +496,7 @@ class SpecialSection extends StatelessWidget {
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () {
                       _controller.animateTo(
-                        _controller.offset - 300.0 * 4, 
+                        _controller.offset - 300.0 * 1, 
                         curve: Curves.easeOut,
                         duration: const Duration(milliseconds: 300),
                       );
@@ -393,7 +504,7 @@ class SpecialSection extends StatelessWidget {
                   ),
                   Expanded(
                     child: SizedBox(
-                      height: 200,
+                      height: 550,
                       child: ListView.separated(
                         controller: _controller,
                         scrollDirection: Axis.horizontal,
@@ -405,24 +516,13 @@ class SpecialSection extends StatelessWidget {
                                 showDialog(
                                   context: context,
                                   builder: (context) {
-                                    return Dialog(
-                                      child: Container(
-                                        height: 200,
-                                        color:const Color.fromRGBO(255, 195, 195, 1),
-                                        child: Center(
-                                          child: Text(
-                                            snapshot.data?[index]['description'],
-                                            style: const TextStyle(fontSize: 24),
-                                          ),
-                                        ),
-                                      ),
-                                    );
+                                    return Modal(data: snapshot.data?[index]);
                                   },
                                 );
                               },
                               child: SizedBox(
-                                width: 300,
-                                height: 170,
+                                width: 350,
+                                height: 500,
                                 child: Image.network(
                                   snapshot.data?[index]['img_link'],
                                   fit: BoxFit.cover,
@@ -446,7 +546,7 @@ class SpecialSection extends StatelessWidget {
                     icon: const Icon(Icons.arrow_forward),
                     onPressed: () {
                       _controller.animateTo(
-                        _controller.offset + 300.0 * 4,
+                        _controller.offset + 300.0 * 1,
                         curve: Curves.easeOut,
                         duration: const Duration(milliseconds: 300),
                       );
@@ -464,3 +564,83 @@ class SpecialSection extends StatelessWidget {
   }
 }
 
+class SectionMyList extends StatelessWidget{
+  SectionMyList({super.key});
+  
+  final ScrollController _controller = ScrollController();
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: Hive.box('myList').listenable(),
+      builder: (context, Box box, _) {
+        var allData = box.values.toList();
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                _controller.animateTo(
+                  _controller.offset - 300.0 * 1, 
+                  curve: Curves.easeOut,
+                  duration: const Duration(milliseconds: 300),
+                );
+              },
+            ),
+            Expanded(
+              child: SizedBox(
+                height: 200,
+                child: ListView.separated(
+                  // controller: _controller,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: allData.length,
+                  itemBuilder: (context, index) => Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Modal(data: allData[index]);
+                            },
+                          );
+                        },
+                        child: SizedBox(
+                          width: 300,
+                          height: 170,
+                          child: Image.network(
+                            allData[index]['img_link'],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        allData[index]['title'],
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Color.fromRGBO(255, 195, 195, 1),
+                        ),
+                      ),
+                    ],
+                  ),
+                  separatorBuilder: (context, index) => const SizedBox(width: 20),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.arrow_forward),
+              onPressed: () {
+                _controller.animateTo(
+                  _controller.offset + 300.0 * 1,
+                  curve: Curves.easeOut,
+                  duration: const Duration(milliseconds: 300),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
