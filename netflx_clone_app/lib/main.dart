@@ -5,6 +5,8 @@ import 'dart:convert';
 
 var box = Hive.box('myList');
 
+
+
 void main() async{
   box = await Hive.openBox('myList');
   await box.clear();
@@ -354,8 +356,6 @@ class Modal extends StatelessWidget {
                   } else {
                     await box.add(data);
                   }
-                  // ignore: avoid_print
-                  print(box.values.toList());
                 },
                 child: ValueListenableBuilder(
                   valueListenable: box.listenable(),
