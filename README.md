@@ -9,3 +9,9 @@ The project is a cross-platform Netflix clone built using Flutter and Dart. With
     - Netflix Originals section with a unique presentation format.
 - **More Info Modal**: Dive deeper into your favorite titles with detailed information provided in a modal. No playback, but comprehensive details to help users make informed choices.
 - **Series/Films/My List Pages**: Navigate through dedicated pages for series, films, and personalized lists for quick access to content of interest.
+
+## Credits
+
+  Onofrei Maria, 3A2
+
+Proiect __Tehnici de Programare pe Platforme Mobile__ - Anul III - Facultatea de Informatica Iasi (2024)
